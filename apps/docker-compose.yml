@@ -96,8 +96,6 @@ services:
     volumes:
       - /var/lib/tailscale:/var/lib/tailscale
     restart: unless-stopped
-    networks:
-      - app-network
 
 # To create the network, run the following command:
 # docker network create app-network
