@@ -21,6 +21,8 @@ services:
       - 6881:6881 # Torrent port
       - 6881:6881/udp # Torrent UDP port
     restart: unless-stopped
+    networks:
+      - app-network
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -36,13 +38,14 @@ services:
       # - /home/aatit/data/jellyfin/movies:/data/movies
       - /media/devmon/STORAGE/jellyfin/tvseries:/data/tvshows
       - /media/devmon/STORAGE/jellyfin/movies:/data/movies
-
     ports:
       - 8096:8096
       - 8920:8920 # optional
       - 7359:7359/udp # optional
       - 1900:1900/udp # optional
     restart: unless-stopped
+    networks:
+      - app-network
 
   ghost:
     image: ghost:5-alpine
@@ -63,9 +66,10 @@ services:
       database__connection__database: ghost
     volumes:
       - ~/data/ghost:/var/lib/ghost/content 
-
     ports:
       - 4005:2368
+    networks:
+      - app-network
 
   mysqldb:
     image: mysql:8.0
@@ -75,6 +79,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - ~/data/mysql:/var/lib/mysql  # Change this to your actual path
+    networks:
+      - app-network
 
   tailscale:
     image: tailscale/tailscale:stable
@@ -91,3 +97,9 @@ services:
     volumes:
       - /var/lib/tailscale:/var/lib/tailscale
     restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true 
