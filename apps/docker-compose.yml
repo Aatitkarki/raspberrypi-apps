@@ -100,6 +100,8 @@ services:
     networks:
       - app-network
 
+# To create the network, run the following command:
+# docker network create app-network
 networks:
   app-network:
     external: true 
