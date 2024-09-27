@@ -46,7 +46,7 @@ services:
     networks:
       - app-network
 
-  ghost:
+  ghost_blog:
     image: ghost:5-alpine
     restart: always
     container_name: ghost_blog
