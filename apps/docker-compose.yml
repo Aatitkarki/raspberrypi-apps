@@ -1,4 +1,3 @@
-version: '3'
 # Secrets are not here but stored on my macbook
 services:
   qbittorrent:
