@@ -45,14 +45,49 @@ services:
     restart: unless-stopped
 
   ghost:
-    image: ghost:latest
-    container_name: ghost_blog
+    image: ghost:5-alpine
     restart: always
+    container_name: ghost_blog
+    environment:
+      url: https://blog.sureshk.com.np  # Your domain
+      mail__transport: SMTP
+      mail__options__host: smtp.gmail.com
+      mail__options__port: 587
+      mail__options__auth__user: ${MAIL_AUTH_USER}
+      mail__options__auth__pass: ${MAIL_OPTIONS_AUTH_PASS} 
+      mail__from: ${MAIL_AUTH_USER}
+      database__client: mysql
+      database__connection__host: mysqldb
+      database__connection__user: root
+      database__connection__password: ${MYSQL_ROOT_PASSWORD}
+      database__connection__database: ghost
+    volumes:
+      - ~/data/ghost:/var/lib/ghost/content 
+
     ports:
       - 4005:2368
+
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    container_name: mysqldb
     environment:
-      url: https://blog.sureshk.com.np  # Update this with your subdomain
-      database__client: sqlite3
-      database__connection__filename: /var/lib/ghost/content/data/ghost.db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - /home/aatit/data/ghost:/var/lib/ghost/content
+      - ~/data/mysql:/var/lib/mysql  # Change this to your actual path
+
+  tailscale:
+    image: tailscale/tailscale:stable
+    container_name: tailscale
+    hostname: raspberrypi-tailscale
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    security_opt:
+      - apparmor:unconfined
+    network_mode: "host" # Necessary for Tailscale to manage the network
+    environment:
+      - TS_AUTHKEY= ${TS_AUTHKEY} # Add your Tailscale auth key here
+    volumes:
+      - /var/lib/tailscale:/var/lib/tailscale
+    restart: unless-stopped
