@@ -9,7 +9,8 @@ services:
       - /home/aatit/applications/services/nginx/default1.conf:/etc/nginx/conf.d/default.conf  # Mount custom Nginx config
       - /home/aatit/applications/services/nginx/ssl:/etc/letsencrypt
       - /home/aatit/applications/services/certbot/www:/var/www/certbot  # Webroot directory for Certbot
-
+    depends_on:
+      - certbot
     restart: unless-stopped
     networks:
       - app-network
