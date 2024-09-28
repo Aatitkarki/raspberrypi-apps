@@ -6,49 +6,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - /home/aatit/applications/services/certs:/etc/nginx/certs
       - /home/aatit/applications/services/nginx/default1.conf:/etc/nginx/conf.d/default.conf  # Mount custom Nginx config
-      # - /home/aatit/applications/services/nginx/ssl:/etc/letsencrypt
-      - /home/aatit/applications/services/certbot/www:/var/www/certbot  # Webroot directory for Certbot
-      # - ./nginx/ssl/dhparam.pem:/etc/nginx/ssl/dhparam.pem
-      # - ./nginx/certs/dev.reciperi.com.pem:/etc/nginx/dev.reciperi.com.pem # New Line!
-      # - ./nginx/certs/dev.reciperi.com-key.pem:/etc/nginx/dev.reciperi.com-key.pem # New Line!
-    depends_on:
-      - certbot
-    restart: unless-stopped
+    restart: unless-stoppe
     networks:
       - app-network
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     - /home/aatit/applications/services/certbot/www/:/var/www/certbot/:rw
-  #     - /home/aatit/applications/services/certbot/conf/:/etc/letsencrypt/:rw
-
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    volumes:
-      - /home/aatit/applications/services/certbot/conf/:/etc/letsencrypt/:rw
-      - /home/aatit/applications/services/certbot/www/:/var/www/certbot/:rw
-      - /home/aatit/applications/services/cloudflare.ini:/etc/letsencrypt/cloudflare.ini:ro
-    environment:
-      - CERTBOT_DNS_CLOUDFLARE=true
-    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini --email aatitkarki12345@gmail.com --agree-tos --no-eff-email --dns-cloudflare-propagation-seconds 60 -d sureshk.com.np -d *.sureshk.com.np
-    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew; sleep 12h; done"
-    networks:
-      - app-network
-
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   container_name: certbot
-  #   volumes:
-  #     - /home/aatit/applications/services/nginx/ssl:/etc/letsencrypt
-  #     # - /home/aatit/applications/services/certbot/www:/var/www/certbot  # Same webroot directory
-
-  #   command: certonly --webroot --webroot-path=/var/www/certbot --email aatitkarki12345@gmail.com --agree-tos --no-eff-email -d sureshk.com.np -d *.sureshk.com.np
-  #   entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h; done"
-  #   networks:
-  #     - app-network
 
 networks:
   app-network:
