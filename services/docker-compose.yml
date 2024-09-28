@@ -17,11 +17,26 @@ services:
     restart: unless-stopped
     networks:
       - app-network
+
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - /home/aatit/applications/services/certbot/www/:/var/www/certbot/:rw
+  #     - /home/aatit/applications/services/certbot/conf/:/etc/letsencrypt/:rw
+
   certbot:
     image: certbot/certbot:latest
+    container_name: certbot
     volumes:
-      - /home/aatit/applications/services/certbot/www/:/var/www/certbot/:rw
       - /home/aatit/applications/services/certbot/conf/:/etc/letsencrypt/:rw
+      - /home/aatit/applications/services/certbot/www/:/var/www/certbot/:rw
+      - /home/aatit/applications/services/cloudflare.ini:/etc/letsencrypt/cloudflare.ini:ro
+    environment:
+      - CERTBOT_DNS_CLOUDFLARE=true
+    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini --email aatitkarki12345@gmail.com --agree-tos --no-eff-email --dns-cloudflare-propagation-seconds 60 -d sureshk.com.np -d *.sureshk.com.np
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew; sleep 12h; done"
+    networks:
+      - app-network
 
   # certbot:
   #   image: certbot/certbot:latest
