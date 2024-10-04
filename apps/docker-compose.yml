@@ -35,7 +35,8 @@ services:
       - /home/aatit/data/jellyfin/config:/config
       # - /home/aatit/data/jellyfin/tvseries:/data/tvshows
       # - /home/aatit/data/jellyfin/movies:/data/movies
-      - /media/devmon/STORAGE/jellyfin/tvseries:/data/tvshows
+      - /home/aatit/data/qbittorrent/downloads:/data/tvshows
+      # - /media/devmon/STORAGE/jellyfin/tvseries:/data/tvshows
       - /media/devmon/STORAGE/jellyfin/movies:/data/movies
     ports:
       - 8096:8096
